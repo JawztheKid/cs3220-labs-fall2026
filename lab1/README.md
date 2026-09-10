@@ -23,7 +23,7 @@ source with a numbered `Task`.
 
 Follow this [document](https://github.com/gt-cs3220-2026/cs3220-labs-fall2026/blob/main/lab0/Take_home/ICE_environment_setup.pdf) to access OnDemand ICE and connect to Coder to setup experiment environment. 
 
-Remember to run `source /storage/ice-shared/cs3220/labs_setup.sh` in your terminal to get an environment with
+Remember to run `source /storage/ice-shared/cs3220/labs_setup.sh` and `module load perl/5.36.0` in your terminal to get an environment with
 `verilator`, `make`, `g++`. 
 
 ---
@@ -66,6 +66,90 @@ infers a latch, so keep a `default`.
 **Symptom to recognise:** the design builds and runs, but printed `PC=` values
 are wrong or `wregno` names a register the program never mentions. That is a
 misaligned concatenation, not an arithmetic bug. Fix the layout first.
+
+### In-Class 2 — Tasks 4–5, `agex_stage.v`
+
+**Goal:** `./run_tests.sh inclass_2` reports 5 of 5, with `inclass_1` still at
+3 of 3. This adds the six conditional branches.
+
+**Task 4** computes the branch condition, **Task 5** computes the branch target
+and sends the redirect to FE and DE.
+
+FE has no branch predictor: it fetches `PC + 4` every cycle, which amounts to
+predicting that no branch is ever taken. AGEX is the first stage that knows the
+real answer, so AGEX detects the bad prediction and repairs it. This line is
+given to you and **you may not change it**:
+
+```verilog
+assign br_mispred_AGEX = (is_br_AGEX && (br_target_AGEX != pcplus_AGEX)) ? 1 : 0;
+```
+
+It defines "wrong" as *the target differing from what FE
+actually fetched next*, not as "the branch was taken". So `br_target_AGEX` needs
+a sensible value on **every** path: taken, not taken, and not-a-branch.
+
+The repair itself is already built. `fe_stage.v` overrides the PC and clears its
+latch on a mispredict; `de_stage.v` ORs the same signal into
+`pipeline_stall_DE`, which zeroes the DE latch. Your job is only to compute the
+target and deliver it. The two output bundles must match the order each
+receiving stage unpacks, and their totals must match the `from_AGEX_to_*_WIDTH`
+constants.
+
+Two things to keep straight: `is_br_AGEX` ("is this a branch?") is decoded for
+you in DE, while `br_cond_AGEX` ("if it is, is the condition true?") is yours.
+
+### Take-Home — Tasks 6–7, `de_stage.v` and `agex_stage.v`
+
+**Goal:** `./run_tests.sh takehome` reports 12 of 12. This adds `sub`, `lui`,
+`auipc`, `jal` and `jalr`, together with the immediate formats and decode
+signals they need.
+
+**Task 6** (`de_stage.v`) completes the decode: the missing immediate forms, the
+two jumps in `is_br_DE`, and the full list of register-writing instructions in
+`wr_reg_DE`. **Task 7** (`agex_stage.v`) extends the two blocks you already
+wrote: more arms in the ALU `case`, and jump targets in the Task 5 block.
+
+A jump both writes a register *and* redirects the front end, so `jal` and
+`jalr` each appear twice in your code: once in the ALU `case`, where the
+"result" is the return address, and once in the target block. The two differ
+only in where the target comes from.
+
+**Write Tasks 6 and 7 in one sitting before you run the suite.** The compiled
+tests are each a chain of small cases, and the chain itself is built out of `li`
+(which the assembler turns into `lui` + `addi`), `bne`, and `j` (which is `jal`).
+That means none of them pass until `lui`, `bne` and `jal` all work, whatever the
+file is named after — `add.mem` is not a test of `add` in isolation. Get the
+hand-written `test9` and `test10` (the shortest `jal` and `jalr` tests) passing
+first, then run the whole suite and let the list of failures tell you what is
+wrong.
+
+### Bonus — Task 8, four files (optional)
+
+**Goal:** `./run_tests.sh bonus`. 
+
+**The easy half** stays in the `agex_stage.v` ALU `case` you have been extending
+since Task 2: the logic instructions, the shifts, the set-less-than family, and
+`mul`. `test14` is a hand-written spot check of five of
+them and stops at the first one that is wrong, so start there. `testall.mem`
+runs every arithmetic, logic, shift and compare instruction in one program. Passing the individual tests but failing that one means the bug only appears
+when different kinds of instruction run back to back.
+
+**The challenging half** is `lw` and `sw`. Four files have to be changed:
+
+- `agex_stage.v` — where the address is computed, and where it is decided what
+  this instruction does to memory, if anything.
+- `mem_stage.v` — owns `dmem`. The read and the write are both already written
+  for you, so look at what they depend on that never arrives.
+- `wb_stage.v` — the value written back can now come from two places, so
+  something has to choose.
+- `define.vh` — the latch widths.
+
+Work out for yourself which signals must cross which latch. Adding one field to
+a latch is always the same four edits at once: compute it, pack it, unpack it at
+the *same position*, and count it in the width in `define.vh`. Verilator stops
+you if the widths disagree; it cannot see a wrong position, which builds fine and
+scrambles the values. `test15` is the smallest `lw`/`sw` test; `lw.mem` and
+`sw.mem` are the compiled ones.
 
 ---
 
@@ -210,3 +294,118 @@ Submit **`submission.zip`**, produced by `make submit` to Gradescope.
   — how to open `trace.vcd` in Coder
 - [Tutorial on the RISC-V test suite](https://web.archive.org/web/20221031194615/https://inst.eecs.berkeley.edu/~cs250/fa10/handouts/tut3-riscv.pdf)
 
+---
+
+## FAQ
+
+**1. My build fails with `%Error: Exiting due to N warning(s)`.**
+
+Verilator treats warnings as errors here, on purpose. A `WIDTHTRUNC` or
+`WIDTHEXPAND` on an `assign` means a concatenation does not add up to the latch
+width it is assigned to or from — count the fields against `define.vh`. This is
+the one class of latch mistake the tool can catch for you; it cannot check the
+*order* of the fields, so a wrong order builds cleanly and produces garbage.
+
+**2. A test prints `Total instructions=0`, or nothing at all.**
+
+Nothing reached write-back. Either the memory image did not load — check the
+path in `` `IDMEMINITFILE `` — or `valid` is not making it down the latches.
+
+**3. Debugging is taking forever. Any advice?**
+
+1. Read the error message. Verilator's messages name the file, the line and the
+   two widths involved.
+2. Work out what the program *should* do first, from the `.asm` or `.dump`, or
+   by running it in the RISC-V emulator linked above.
+3. Then open `trace.vcd` in Signal Viewer. Always put `clk`, `reset` and the `PC_*`
+   signals in the trace alongside whatever you are actually investigating.
+4. Follow one instruction, not one cycle: every latch carries `inst_count_*`,
+   assigned in FE and passed down unchanged.
+
+**4. A branch is taken. Is the new PC `PC + imm` or `PC + 4 + imm`?**
+
+`PC + imm`. Be careful converting the immediate field into an offset.
+
+**5. Why do we drop the low 2 bits of an address?**
+
+The ISA is byte-addressed but `imem`/`dmem` are declared as arrays of 32-bit
+words, and this lab has no unaligned accesses, so bits [1:0] are always zero.
+The framework already does this for you:
+```verilog
+assign inst_FE = imem[PC_FE_latch[`IMEMADDRBITS-1:`IMEMWORDBITS]];
+dmem[memaddr_MEM[`DMEMADDRBITS-1:`DMEMWORDBITS]];
+```
+`imem` and `dmem` hold 2^14 words, so only address bits [15:2] are used.
+
+**6. Do I have to stop writes to `x0`?**
+
+No. Keeping `x0` at zero is the assembler's and the programmer's problem, not
+the hardware's.
+
+**7. Do I need a branch predictor, or a stack for nested `jal`s?**
+
+No to both. Branches are predicted not-taken; nested calls are software's
+problem.
+
+**8. How do I use `signed` in Verilog?**
+
+Verilog treats plain vectors as unsigned. `$signed()` reinterprets the same bits
+as two's complement, and so does declaring a `wire signed` copy:
+```verilog
+wire signed [`DBITS-1:0] s_regval1_AGEX;
+wire signed [`DBITS-1:0] s_regval2_AGEX;
+assign s_regval1_AGEX = regval1_AGEX;
+assign s_regval2_AGEX = regval2_AGEX;
+
+assign s_less = (s_regval1_AGEX < s_regval2_AGEX);  // signed
+assign less   = (  regval1_AGEX <   regval2_AGEX);  // unsigned
+```
+Nothing is converted; the bits are identical. Only the interpretation changes.
+Take `regval1 = 0x00000000` and `regval2 = 0xFFFFFFFF`:
+
+| | reads `regval2` as | `regval1 < regval2` |
+|---|---|---|
+| `less` (unsigned) | 4294967295 | **true** |
+| `s_less` (signed) | −1 | **false** |
+
+`blt`/`bge`/`slt`/`slti` want the signed row; `bltu`/`bgeu`/`sltu`/`sltiu` want
+the unsigned one. `beq` and `bne` are unaffected — equality does not care.
+
+**9. Are immediates sign-extended even for the unsigned comparisons?**
+
+Yes. In RISC-V every immediate is sign-extended. `bltu` and `bgeu` do an
+unsigned *comparison* of sign-extended values.
+
+**10. What is `li` in the disassembly?**
+
+A pseudo-instruction. Small values assemble to one `addi`; large ones to
+`lui` + `addi`. That is why almost every compiled test needs `lui`.
+
+**11. `lui` says `R[rd] = imm << 12`, but the U-immediate is already shifted. Do I
+shift again?**
+
+No. If `sxt_imm_DE` already built the U-immediate with the low 12 bits zeroed,
+`lui` just passes it through.
+
+**12. In the ISA description `srai`, `srli` and `slli` have no immediate type. What
+do I use?**
+
+The I-immediate, but only its low 5 bits (`inst[24:20]`) are the shift amount.
+`sra`, `srl` and `sll` likewise use only the low 5 bits of `rs2`.
+
+**13. What do `slti` / `sltiu` produce?**
+
+0 or 1. They set `rd` to 1 when `R[rs1] < sext(imm)` — signed for `slti`,
+unsigned for `sltiu`.
+
+**14. I get `%Warning-LATCH: Latch inferred for signal ...`.**
+
+A combinational `always @(*)` block that does not assign its output on every
+path. Add the missing `default` arm or `else` branch. Do not silence it with
+`/* verilator lint_off LATCH */` unless you are certain the latch is intended —
+in this lab it never is.
+
+**15. Can I add new files?**
+
+Yes, as long as `make submit` picks them up (it zips `*.v`, `*.vh`,
+`sim_main.cpp` and the `Makefile`).
