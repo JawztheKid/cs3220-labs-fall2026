@@ -62,6 +62,9 @@ module AGEX_STAGE(
   reg [`DBITS-1:0] br_target_AGEX;
   wire br_mispred_AGEX;
 
+  // aluout_AGEX
+  reg [`DBITS-1:0] aluout_AGEX;
+
 
   // ===== Task 1: unpack the DE latch ============================
   //
@@ -83,7 +86,14 @@ module AGEX_STAGE(
             pcplus_AGEX,
             op_I_AGEX,
             inst_count_AGEX,
-            de_latch_rest        // <-- Task 1: replace with the six remaining fields
+            
+            regval1_AGEX,
+            regval2_AGEX,
+            sxt_imm_AGEX,
+            is_br_AGEX,
+            wr_reg_AGEX,
+            wregno_AGEX
+            // <-- Task 1: replace with the six remaining fields
             } = from_DE_latch;
 
 
@@ -96,12 +106,45 @@ module AGEX_STAGE(
   //   infers a latch.  Task 7 adds more arms.
   //
   // ===========================================================================
+  //   TODO (a): add these arms to the Task 2 ALU case:
+  //               `SUB_I  `LUI_I  `AUIPC_I  `JAL_I  `JALR_I
+  //             `JAL_I and `JALR_I write the return address into rd.
+    //               `AND_I   `OR_I    `XOR_I   `SLL_I   `SRL_I   `SRA_I
+  //               `SLT_I   `SLTU_I  `MUL_I
+  //               `ANDI_I  `ORI_I   `XORI_I  `SLLI_I  `SRLI_I  `SRAI_I
+  //               `SLTI_I  `SLTIU_I
   always @ (*) begin
-    // case (op_I_AGEX)
-    //   default: begin
-    //     aluout_AGEX  = '0;
-    //   end
-    // endcase
+     case (op_I_AGEX)
+      `ADD_I: aluout_AGEX = $signed(regval1_AGEX) + $signed(regval2_AGEX);
+      `ADDI_I: aluout_AGEX = $signed(regval1_AGEX) + sxt_imm_AGEX;
+
+      `SUB_I: aluout_AGEX = $signed(regval1_AGEX) - $signed(regval2_AGEX);
+      `LUI_I: aluout_AGEX = sxt_imm_AGEX;
+      `AUIPC_I: aluout_AGEX = $signed(regval1_AGEX) + $signed(regval2_AGEX); //
+      `JAL_I: aluout_AGEX = $signed(regval1_AGEX) + $signed(regval2_AGEX); //
+      `JALR_I: aluout_AGEX = $signed(regval1_AGEX) + $signed(regval2_AGEX); //
+      
+      `AND_I: aluout_AGEX = $signed(regval1_AGEX) & $signed(regval2_AGEX);
+      `OR_I: aluout_AGEX = $signed(regval1_AGEX) | $signed(regval2_AGEX);
+      `XOR_I: aluout_AGEX = $signed(regval1_AGEX) ^ $signed(regval2_AGEX);
+      `SLL_I: aluout_AGEX = $signed(regval1_AGEX) << $signed(regval2_AGEX);
+      `SRL_I: aluout_AGEX = $signed(regval1_AGEX) >> $signed(regval2_AGEX);
+      `SRA_I: aluout_AGEX = $signed(regval1_AGEX) >>> $signed(regval2_AGEX);
+      `SLT_I: aluout_AGEX = $signed(regval1_AGEX) < $signed(regval2_AGEX) ? 1 : 0;
+      `SLTU_I: aluout_AGEX = regval1_AGEX < regval2_AGEX ? 1 : 0;
+      `MUL_I: aluout_AGEX = $signed(regval1_AGEX) * $signed(regval2_AGEX);
+      `ANDI_I:
+      `ORI_I:
+      `XORI_I:
+      `SLLI_I:
+      `SRLI_I:
+      `SRAI_I:
+      `SLTI_I:
+      `SLTIU_I:
+      default: begin
+        aluout_AGEX  = '0;
+      end
+    endcase
   end
 
 
@@ -124,7 +167,10 @@ module AGEX_STAGE(
                                 inst_count_AGEX,
                                 // <-- Task 3: replace this padding with the
                                 //     three fields mem_stage.v unpacks next
-                                {(`AGEX_latch_WIDTH - (1 + `INSTBITS + `DBITS + `IOPBITS + `DBITS)){1'b0}}
+                                aluout_AGEX,
+                                wr_reg_AGEX,
+                                wregno_AGEX
+                                //{(`AGEX_latch_WIDTH - (1 + `INSTBITS + `DBITS + `IOPBITS + `DBITS)){1'b0}}
                                  };
 
   always @ (posedge clk ) begin
@@ -153,14 +199,12 @@ module AGEX_STAGE(
   // ===========================================================================
   always @ (*) begin
     case (op_I_AGEX)
-      `BEQ_I : br_cond_AGEX = 1'b1; // write correct code to check the branch condition.
-      /*
-      `BNE_I : ...
-      `BLT_I : ...
-      `BGE_I : ...
-      `BLTU_I: ..
-      `BGEU_I : ...
-      */
+      `BEQ_I  : br_cond_AGEX = $signed(regval1_AGEX) == $signed(regval2_AGEX); //1'b1; // write correct code to check the branch condition.
+      `BNE_I  : br_cond_AGEX = $signed(regval1_AGEX) != $signed(regval2_AGEX);
+      `BLT_I  : br_cond_AGEX = $signed(regval1_AGEX) < $signed(regval2_AGEX);
+      `BGE_I  : br_cond_AGEX = $signed(regval1_AGEX) >= $signed(regval2_AGEX);
+      `BLTU_I : br_cond_AGEX = regval1_AGEX < regval2_AGEX;
+      `BGEU_I : br_cond_AGEX = regval1_AGEX >= regval2_AGEX;
       default : br_cond_AGEX = 1'b0;
     endcase
   end
@@ -182,8 +226,10 @@ module AGEX_STAGE(
   // ===========================================================================
 
   always @(*)begin
-    br_target_AGEX = '0;              
-    // if (is_br_AGEX && br_cond_AGEX)
+    br_target_AGEX = pcplus_AGEX;              
+    if (is_br_AGEX && br_cond_AGEX) begin
+      br_target_AGEX =  PC_AGEX + $signed(sxt_imm_AGEX);
+    end
   end
 
   
@@ -191,10 +237,10 @@ module AGEX_STAGE(
                          && (br_target_AGEX != pcplus_AGEX)) ? 1 : 0; // Given to you.  Do not change this line.
 
   // forward signals to the FE stage
-  assign from_AGEX_to_FE = '0;        
+  assign from_AGEX_to_FE = {br_mispred_AGEX, br_target_AGEX};        
 
   // forward signals to the DE stage
-  assign from_AGEX_to_DE = '0;        
+  assign from_AGEX_to_DE = br_mispred_AGEX;        
 
 
   // ===== Task 7: more ALU arms, and the jump targets =============
