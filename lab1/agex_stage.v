@@ -133,14 +133,14 @@ module AGEX_STAGE(
       `SLT_I: aluout_AGEX = $signed(regval1_AGEX) < $signed(regval2_AGEX) ? 1 : 0;
       `SLTU_I: aluout_AGEX = regval1_AGEX < regval2_AGEX ? 1 : 0;
       `MUL_I: aluout_AGEX = $signed(regval1_AGEX) * $signed(regval2_AGEX);
-      `ANDI_I:
-      `ORI_I:
-      `XORI_I:
-      `SLLI_I:
-      `SRLI_I:
-      `SRAI_I:
-      `SLTI_I:
-      `SLTIU_I:
+      `ANDI_I: aluout_AGEX = $signed(regval1_AGEX) & sxt_imm_AGEX;
+      `ORI_I: aluout_AGEX = $signed(regval1_AGEX) | sxt_imm_AGEX;
+      `XORI_I: aluout_AGEX = $signed(regval1_AGEX) ^ sxt_imm_AGEX;
+      `SLLI_I: aluout_AGEX = $signed(regval1_AGEX) << sxt_imm_AGEX;
+      `SRLI_I: aluout_AGEX = $signed(regval1_AGEX) >> sxt_imm_AGEX;
+      `SRAI_I: aluout_AGEX = $signed(regval1_AGEX) >>> sxt_imm_AGEX;
+      `SLTI_I: aluout_AGEX = $signed(regval1_AGEX) < $signed(sxt_imm_AGEX) ? 1 : 0;
+      `SLTIU_I: aluout_AGEX = regval1_AGEX < sxt_imm_AGEX ? 1 : 0;
       default: begin
         aluout_AGEX  = '0;
       end
@@ -224,12 +224,17 @@ module AGEX_STAGE(
   //   Fill in from_AGEX_to_DE, which de_stage.v unpacks.
   //
   // ===========================================================================
-
+  //   TODO (b): extend the Task 5 target block so jal and jalr redirect too.
+  //             jal adds its immediate to PC_AGEX.  jalr adds its immediate
+  //             to a register value, then clears bit 0 of the result.
+  //             Neither one has a condition to evaluate.
+  //
   always @(*)begin
     br_target_AGEX = pcplus_AGEX;              
     if (is_br_AGEX && br_cond_AGEX) begin
       br_target_AGEX =  PC_AGEX + $signed(sxt_imm_AGEX);
     end
+    
   end
 
   

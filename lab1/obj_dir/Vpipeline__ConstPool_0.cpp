@@ -20,15 +20,6 @@ extern const VlWide<32>/*1023:0*/ Vpipeline__ConstPool__CONST_hd6b7ba52_0 = {{
     0x00000000, 0x00000000, 0x00000000, 0x00000000
 }};
 
-extern const VlWide<22>/*703:0*/ Vpipeline__ConstPool__CONST_he4769e82_0 = {{
-    0x2e6d656d, 0x65737438, 0x5f322f74, 0x6c617373,
-    0x2f696e63, 0x74657374, 0x6162312f, 0x32362f6c,
-    0x6c6c3230, 0x732d6661, 0x2d6c6162, 0x33323230,
-    0x302f6373, 0x53333232, 0x75622f43, 0x47697448,
-    0x6e74732f, 0x63756d65, 0x7a2f446f, 0x2f6a6177,
-    0x686f6d65, 0x0000002f
-}};
-
 extern const VlWide<8>/*255:0*/ Vpipeline__ConstPool__CONST_hee2f1268_0 = {{
     0x00000000, 0x00000000, 0x00000000, 0x00000000,
     0x00000000, 0x00000000, 0x00000000, 0x00000000

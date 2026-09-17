@@ -206,12 +206,14 @@ end
 
    reg  [`DBITS-1:0] sxt_imm_DE;
 always @(*) begin 
-  case (type_immediate_DE )  
+  case (type_immediate_DE)  
     `I_immediate: sxt_imm_DE = {{21{inst_DE[31]}}, inst_DE[30:25], inst_DE[24:21], inst_DE[20]};
     `B_immediate: sxt_imm_DE = {{20{inst_DE[31]}}, inst_DE[7], inst_DE[30:25], inst_DE[11:8], 1'b0};
-    `U_immediate: sxt_imm_DE = {21{inst_DE[31]} , inst_DE[30:12]};
-    `S_immediate: sxt_imm_DE = {21{inst_DE[31]} , inst_DE[30:25] , inst_DE[11:7]};
-    `J_immediate: sxt_imm_DE = {21{inst_DE[31]} ,  inst_DE[19:12] , inst_DE[20] , inst_DE[30:21] , 1'b0}; // TODO: check this!!!!!!
+    /*
+    `U_immediate: sxt_imm_DE = {{14{inst_DE[31]}} , inst_DE[30:12]};
+    `S_immediate: sxt_imm_DE = {{21{inst_DE[31]}} , inst_DE[30:25] , inst_DE[11:7]};
+    `J_immediate: sxt_imm_DE = {{21{inst_DE[31]}} ,  inst_DE[19:12] , inst_DE[20] , inst_DE[30:21] , 1'b0}; // TODO: check this!!!!!!
+    */
    default:
     sxt_imm_DE = 32'b0; 
   endcase  
@@ -263,7 +265,7 @@ end
                       (op_I_DE == `SLT_I) ||
                       (op_I_DE == `SLTU_I)||
                       (op_I_DE == `SRA_I) ||
-                      (op_I_DE == `SLR_I) ||
+                      (op_I_DE == `SRL_I) ||
                       (op_I_DE == `SLL_I) ||
                       (op_I_DE == `MUL_I) ||
                       // Reg to Imm
@@ -274,7 +276,7 @@ end
                       (op_I_DE == `SLTI_I) ||
                       (op_I_DE == `SLTIU_I) ||
                       (op_I_DE == `SRAI_I) ||
-                      (op_I_DE == `SLRI_I) ||
+                      (op_I_DE == `SRLI_I) ||
                       (op_I_DE == `SLLI_I) ||
                       // Loads of kinds
                       (op_I_DE == `LUI_I) ||
