@@ -54,11 +54,10 @@ module MEM_STAGE(
 //
 //   The `UNUSED_VAR line below goes away once the signal it names is real.
 // ===========================================================================
-
   wire [`DBITS-1:0] aluout_MEM;  // ALU result
   wire [`REGNOBITS-1:0] wregno_MEM;
   wire wr_reg_MEM;
-
+  
   wire [`DBITS-1:0] memaddr_MEM;  // memory address. need to be computed in AGEX stage and pass through a latch 
   wire [`DBITS-1:0] rd_val_MEM;  // memory read value 
   wire [`DBITS-1:0] wr_val_MEM;  // memory write value 
@@ -66,7 +65,6 @@ module MEM_STAGE(
   
   // Read from D-MEM  (read code is completed if there is a correct memaddr_MEM ) 
   assign rd_val_MEM = dmem[memaddr_MEM[`DMEMADDRBITS-1:`DMEMWORDBITS]];
-
   
  // Write to D-MEM
   always @ (posedge clk) begin
@@ -88,7 +86,7 @@ module MEM_STAGE(
                                 aluout_MEM,
                                 wr_reg_MEM,
                                 wregno_MEM
-                                 } = from_AGEX_latch;  
+                                 } = from_AGEX_latch;
  
 
    
