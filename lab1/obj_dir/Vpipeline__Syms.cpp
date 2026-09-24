@@ -22,7 +22,7 @@ Vpipeline__Syms::Vpipeline__Syms(VerilatedContext* contextp, const char* namep, 
     , TOP__pipeline__my_WB_stage{this, Verilated::catName(namep, "pipeline.my_WB_stage")}
 {
         // Check resources
-        Verilated::stackCheck(186);
+        Verilated::stackCheck(146);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-12);
     _vm_contextp__->timeprecision(-12);

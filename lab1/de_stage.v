@@ -209,11 +209,9 @@ always @(*) begin
   case (type_immediate_DE)  
     `I_immediate: sxt_imm_DE = {{21{inst_DE[31]}}, inst_DE[30:25], inst_DE[24:21], inst_DE[20]};
     `B_immediate: sxt_imm_DE = {{20{inst_DE[31]}}, inst_DE[7], inst_DE[30:25], inst_DE[11:8], 1'b0};
-    /*
-    `U_immediate: sxt_imm_DE = {{14{inst_DE[31]}} , inst_DE[30:12]};
-    `S_immediate: sxt_imm_DE = {{21{inst_DE[31]}} , inst_DE[30:25] , inst_DE[11:7]};
-    `J_immediate: sxt_imm_DE = {{21{inst_DE[31]}} ,  inst_DE[19:12] , inst_DE[20] , inst_DE[30:21] , 1'b0}; // TODO: check this!!!!!!
-    */
+    `U_immediate: sxt_imm_DE = {inst_DE[31:12], 12'b0};
+    `S_immediate: sxt_imm_DE = {{20{inst_DE[31]}}, inst_DE[31:25], inst_DE[11:7]};
+    `J_immediate: sxt_imm_DE = {{12{inst_DE[31]}}, inst_DE[19:12], inst_DE[20], inst_DE[30:21], 1'b0};
    default:
     sxt_imm_DE = 32'b0; 
   endcase  
@@ -281,7 +279,10 @@ end
                       // Loads of kinds
                       (op_I_DE == `LUI_I) ||
                       (op_I_DE == `AUIPC_I) ||
-                      (op_I_DE == `LW_I)
+                      (op_I_DE == `LW_I) ||
+                      // Can't forget jal and jalr
+                      (op_I_DE == `JAL_I) ||
+                      (op_I_DE == `JALR_I)
                     )
                        ? ((rd_DE != 0) ? 1 : 0): 0;
 

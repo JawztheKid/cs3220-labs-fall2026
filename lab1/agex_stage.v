@@ -120,27 +120,31 @@ module AGEX_STAGE(
 
       `SUB_I: aluout_AGEX = $signed(regval1_AGEX) - $signed(regval2_AGEX);
       `LUI_I: aluout_AGEX = sxt_imm_AGEX;
-      `AUIPC_I: aluout_AGEX = $signed(regval1_AGEX) + $signed(regval2_AGEX); //
-      `JAL_I: aluout_AGEX = $signed(regval1_AGEX) + $signed(regval2_AGEX); //
-      `JALR_I: aluout_AGEX = $signed(regval1_AGEX) + $signed(regval2_AGEX); //
+      `AUIPC_I: aluout_AGEX = PC_AGEX + sxt_imm_AGEX;
+      `JAL_I: aluout_AGEX = pcplus_AGEX;
+      `JALR_I: aluout_AGEX = pcplus_AGEX;
       
       `AND_I: aluout_AGEX = $signed(regval1_AGEX) & $signed(regval2_AGEX);
       `OR_I: aluout_AGEX = $signed(regval1_AGEX) | $signed(regval2_AGEX);
       `XOR_I: aluout_AGEX = $signed(regval1_AGEX) ^ $signed(regval2_AGEX);
-      `SLL_I: aluout_AGEX = $signed(regval1_AGEX) << $signed(regval2_AGEX);
-      `SRL_I: aluout_AGEX = $signed(regval1_AGEX) >> $signed(regval2_AGEX);
-      `SRA_I: aluout_AGEX = $signed(regval1_AGEX) >>> $signed(regval2_AGEX);
+      `SLL_I: aluout_AGEX = regval1_AGEX << regval2_AGEX[4:0];
+      `SRL_I: aluout_AGEX = regval1_AGEX >> regval2_AGEX[4:0];
+      `SRA_I: aluout_AGEX = $signed(regval1_AGEX) >>> regval2_AGEX[4:0];
       `SLT_I: aluout_AGEX = $signed(regval1_AGEX) < $signed(regval2_AGEX) ? 1 : 0;
       `SLTU_I: aluout_AGEX = regval1_AGEX < regval2_AGEX ? 1 : 0;
       `MUL_I: aluout_AGEX = $signed(regval1_AGEX) * $signed(regval2_AGEX);
+
       `ANDI_I: aluout_AGEX = $signed(regval1_AGEX) & sxt_imm_AGEX;
       `ORI_I: aluout_AGEX = $signed(regval1_AGEX) | sxt_imm_AGEX;
       `XORI_I: aluout_AGEX = $signed(regval1_AGEX) ^ sxt_imm_AGEX;
-      `SLLI_I: aluout_AGEX = $signed(regval1_AGEX) << sxt_imm_AGEX;
-      `SRLI_I: aluout_AGEX = $signed(regval1_AGEX) >> sxt_imm_AGEX;
-      `SRAI_I: aluout_AGEX = $signed(regval1_AGEX) >>> sxt_imm_AGEX;
+      `SLLI_I: aluout_AGEX = regval1_AGEX << sxt_imm_AGEX;
+      `SRLI_I: aluout_AGEX = regval1_AGEX >> sxt_imm_AGEX;
+      `SRAI_I: aluout_AGEX = $signed(regval1_AGEX) >>> sxt_imm_AGEX[4:0];
       `SLTI_I: aluout_AGEX = $signed(regval1_AGEX) < $signed(sxt_imm_AGEX) ? 1 : 0;
       `SLTIU_I: aluout_AGEX = regval1_AGEX < sxt_imm_AGEX ? 1 : 0;
+       // Let the ALU calculate the address for LW and SW
+      `LW_I: aluout_AGEX = $signed(regval1_AGEX) + sxt_imm_AGEX;
+      `SW_I: aluout_AGEX = $signed(regval1_AGEX) + sxt_imm_AGEX;
       default: begin
         aluout_AGEX  = '0;
       end
@@ -233,6 +237,13 @@ module AGEX_STAGE(
     br_target_AGEX = pcplus_AGEX;              
     if (is_br_AGEX && br_cond_AGEX) begin
       br_target_AGEX =  PC_AGEX + $signed(sxt_imm_AGEX);
+    end
+    else if (op_I_AGEX == `JAL_I) begin
+      // rd = PC + 4 (handled in alu_out)
+      br_target_AGEX = PC_AGEX + $signed(sxt_imm_AGEX);
+    end
+    else if (op_I_AGEX == `JALR_I) begin
+      br_target_AGEX = ($signed(regval1_AGEX) + $signed(sxt_imm_AGEX)) & 32'hFFFFFFFE;
     end
     
   end

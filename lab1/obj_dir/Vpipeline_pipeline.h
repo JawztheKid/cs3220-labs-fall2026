@@ -29,6 +29,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vpipeline_pipeline final : public VerilatedMo
     CData/*0:0*/ __PVT__my_DE_stage__DOT__wr_reg_DE;
     CData/*0:0*/ __PVT__my_DE_stage__DOT__use_rs1_DE;
     CData/*0:0*/ __PVT__my_DE_stage__DOT__use_rs2_DE;
+    CData/*0:0*/ my_DE_stage__DOT____VdfgRegularize_ha41f8c36_0_20;
     CData/*0:0*/ my_AGEX_stage__DOT____VdfgExtracted_hbd4b694e__0;
     CData/*0:0*/ my_AGEX_stage__DOT____VdfgExtracted_hbdd0c81c__0;
     CData/*0:0*/ __PVT__my_MEM_stage__DOT__wr_mem_MEM;

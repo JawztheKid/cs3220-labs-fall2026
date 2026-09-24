@@ -1,64 +1,64 @@
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/add.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/add.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/andi.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/andi.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/and.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/and.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/bgeu.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/bgeu.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/blt.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/blt.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/bltu.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/bltu.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/bne.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/bne.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/jal.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/jal.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/jalr.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/jalr.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/lui.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/lui.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/lw.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/lw.mem
+Failed. exitcode: 0
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/ori.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/ori.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/or.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/or.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/simple.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/simple.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/slli.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/slli.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/sll.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/sll.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/slti.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/slti.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/sltiu.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/sltiu.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/slt.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/slt.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/sltu.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/sltu.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/srai.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/srai.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/sra.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/sra.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/srli.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/srli.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/srl.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/srl.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/sub.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/sub.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/sw.mem
+Failed. exitcode: 0
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/test14.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/sw.mem
-Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/test14.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/test15.mem
 Failed. exitcode: 2
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/test15.mem
-Failed. exitcode: 2
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/test16.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/test16.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/testall.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/testall.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/xori.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/xori.mem
 Passed!
-TESTING: /home/jawz/Documents/CS3220/Take_home/cs3220-labs-fall2026/lab1/test/bonus/xor.mem
+TESTING: /home/jawz/Documents/GitHub/CS3220/cs3220-labs-fall2026/lab1/test/bonus/xor.mem
 Passed!

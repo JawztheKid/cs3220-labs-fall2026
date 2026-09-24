@@ -4,6 +4,14 @@
 
 #include "verilated.h"
 
+extern const VlWide<20>/*639:0*/ Vpipeline__ConstPool__CONST_h14a36095_0 = {{
+    0x2e6d656d, 0x2f786f72, 0x6f6e7573, 0x73742f62,
+    0x312f7465, 0x2f6c6162, 0x32303236, 0x66616c6c,
+    0x6162732d, 0x32302d6c, 0x63733332, 0x3232302f,
+    0x2f435333, 0x74487562, 0x732f4769, 0x6d656e74,
+    0x446f6375, 0x61777a2f, 0x6d652f6a, 0x002f686f
+}};
+
 extern const VlWide<8>/*255:0*/ Vpipeline__ConstPool__CONST_h9e67c271_0 = {{
     0x00000000, 0x00000000, 0x00000000, 0x00000000,
     0x00000000, 0x00000000, 0x00000000, 0x00000000
